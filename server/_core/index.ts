@@ -1,6 +1,8 @@
 import express from 'express';
 import { createExpressMiddleware } from '@trpc/server/adapters/express';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { appRouter } from '../index';
+import { db } from '../db/index';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
@@ -25,4 +27,15 @@ if (process.env.NODE_ENV === 'production') {
   app.get('*', (_, res) => res.sendFile(path.join(publicPath, 'index.html')));
 }
 
-app.listen(PORT, () => console.log(`Padaria Gestao rodando na porta ${PORT}`));
+async function start() {
+  try {
+    console.log('🔄 Rodando migrações do banco de dados...');
+    await migrate(db, { migrationsFolder: path.join(__dirname, '../../drizzle') });
+    console.log('✅ Migrações concluídas.');
+  } catch (err) {
+    console.error('⚠️  Erro nas migrações (continuando):', err);
+  }
+  app.listen(PORT, () => console.log(`🍞 Padaria Gestão rodando na porta ${PORT}`));
+}
+
+start();
