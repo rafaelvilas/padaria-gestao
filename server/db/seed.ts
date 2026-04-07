@@ -9,7 +9,7 @@ function hashSenha(senha: string): string {
   return createHash('sha256').update(senha).digest('hex');
 }
 
-async function seed() {
+export async function runSeed() {
   console.log('Iniciando seed...');
 
   // 1. Usuário admin
@@ -427,12 +427,14 @@ async function seed() {
   ]);
   console.log('Estoque inicial criado para 10 insumos');
 
-  console.log('\nSeed concluido com sucesso!');
-  console.log('Login: admin@padaria.com / admin123');
-  process.exit(0);
+  console.log('\n✅ Seed concluído!');
+  console.log('🔑 Login: admin@padaria.com / admin123');
 }
 
-seed().catch((err) => {
-  console.error('Erro no seed:', err);
-  process.exit(1);
-});
+// Execução direta via CLI: pnpm db:seed
+if (process.argv[1]?.includes('seed')) {
+  runSeed().catch((err) => {
+    console.error('Erro no seed:', err);
+    process.exit(1);
+  }).finally(() => process.exit(0));
+}
