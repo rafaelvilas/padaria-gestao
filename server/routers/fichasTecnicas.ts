@@ -80,6 +80,7 @@ export const fichasTecnicasRouter = router({
       produtoId: z.string().uuid(),
       rendimento: z.number().default(1),
       unidadeRendimento: z.string().default('un'),
+      cmvAlvo: z.number().optional(),
       observacoes: z.string().optional(),
       itens: z.array(z.object({
         insumoId: z.string().uuid(),
@@ -106,6 +107,7 @@ export const fichasTecnicasRouter = router({
         versao,
         rendimento: String(input.rendimento),
         unidadeRendimento: input.unidadeRendimento,
+        cmvAlvo: input.cmvAlvo != null ? String(input.cmvAlvo.toFixed(2)) : null,
         ativa: true,
         observacoes: input.observacoes,
       }).returning();

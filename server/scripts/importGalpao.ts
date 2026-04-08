@@ -23,6 +23,8 @@ import {
   itensInventario,
   itensCotacao,
   cotacoes,
+  itensVenda,
+  cuponsFiscais,
 } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 
@@ -59,6 +61,7 @@ interface Receita {
   nomePrato: string;
   precoVenda: number | null;
   cmvAlvo: number | null;
+  custoFicha: number | null;
   ingredientes: Ingrediente[];
 }
 
@@ -126,16 +129,19 @@ function parseNotaTecnica(filePath: string, categoria: string): Receita | null {
     fileName;
   const nomePrato = String(nomePratoRaw).replace('Nome do Prato:', '').trim() || fileName;
 
-  // Preço de venda (tentamos múltiplas células comuns)
-  const precoVenda =
-    toFloat(getCellValue(ws, 'K', 6)) ||
-    toFloat(getCellValue(ws, 'K', 5)) ||
-    toFloat(getCellValue(ws, 'N', 6)) ||
-    null;
+  // Preço de venda: K6 = "Preço de Venda" na seção POR PREÇO
+  // Fallback: N7 = "Preço sugerido" na seção POR CMV
+  const precoVendaK6 = toFloat(getCellValue(ws, 'K', 6));
+  const precoVendaN7 = toFloat(getCellValue(ws, 'N', 7));
+  const precoVenda = precoVendaK6 > 1 ? precoVendaK6 : precoVendaN7 > 1 ? precoVendaN7 : null;
 
-  // CMV alvo (coluna L geralmente tem o % CMV)
-  const cmvRaw = toFloat(getCellValue(ws, 'L', 6)) || toFloat(getCellValue(ws, 'L', 5));
-  const cmvAlvo = cmvRaw > 0 && cmvRaw <= 1 ? cmvRaw * 100 : cmvRaw > 1 ? cmvRaw : null;
+  // CMV alvo: N6 = "CMV Desejado" (decimal como 0.22 = 22% ou já em % como 22)
+  const cmvRaw = toFloat(getCellValue(ws, 'N', 6));
+  const cmvAlvo = cmvRaw > 0 && cmvRaw <= 1 ? cmvRaw * 100 : cmvRaw > 1 && cmvRaw <= 100 ? cmvRaw : null;
+
+  // Custo total da ficha: H19 = "Total" (soma de todos os itens)
+  const custoFichaRaw = toFloat(getCellValue(ws, 'H', 19));
+  const custoFicha = custoFichaRaw > 0 ? custoFichaRaw : null;
 
   const ingredientes: Ingrediente[] = [];
 
@@ -173,7 +179,7 @@ function parseNotaTecnica(filePath: string, categoria: string): Receita | null {
     return null;
   }
 
-  return { arquivo: fileName, categoria, nomePrato, precoVenda, cmvAlvo, ingredientes };
+  return { arquivo: fileName, categoria, nomePrato, precoVenda, cmvAlvo, custoFicha, ingredientes };
 }
 
 // ─── LEITURA DOS ARQUIVOS ─────────────────────────────────────────────────────
@@ -276,6 +282,8 @@ async function importar() {
   await db.delete(cotacoes);
   await db.delete(itensFichaTecnica);
   await db.delete(fichasTecnicas);
+  await db.delete(itensVenda);      // referencia produtos
+  await db.delete(cuponsFiscais);
   await db.delete(produtos);
   await db.delete(categoriasProduto);
   await db.delete(insumos);
@@ -365,6 +373,8 @@ async function importar() {
           versao: 1,
           rendimento: '1',
           unidadeRendimento: 'un',
+          cmvAlvo: receita.cmvAlvo ? String(receita.cmvAlvo.toFixed(2)) : null,
+          custoFicha: receita.custoFicha ? String(receita.custoFicha.toFixed(4)) : null,
           ativa: true,
           observacoes: `Importado de: ${receita.arquivo}`,
         })

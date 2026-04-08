@@ -92,6 +92,8 @@ export const fichasTecnicas = pgTable('fichas_tecnicas', {
   versao: integer('versao').default(1),
   rendimento: decimal('rendimento', { precision: 10, scale: 3 }).default('1'),
   unidadeRendimento: varchar('unidade_rendimento', { length: 20 }).default('un'),
+  cmvAlvo: decimal('cmv_alvo', { precision: 5, scale: 2 }),   // % alvo ex: 28.00
+  custoFicha: decimal('custo_ficha', { precision: 10, scale: 4 }), // custo total calculado na importação
   ativa: boolean('ativa').default(true),
   observacoes: text('observacoes'),
   criadoPor: uuid('criado_por').references(() => usuarios.id),

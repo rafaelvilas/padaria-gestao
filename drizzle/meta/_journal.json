@@ -8,6 +8,13 @@
       "when": 1775563562793,
       "tag": "0000_sad_rumiko_fujikawa",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1775674093025,
+      "tag": "0001_fancy_madripoor",
+      "breakpoints": true
     }
   ]
 }
