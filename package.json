@@ -9,7 +9,9 @@
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
-    "db:seed": "tsx server/db/seed.ts"
+    "db:seed": "tsx server/db/seed.ts",
+    "import:galpao": "tsx server/scripts/importGalpao.ts",
+    "import:vendas": "tsx server/scripts/importVendas.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -50,6 +52,7 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "wouter": "^3.3.5",
+    "xlsx": "^0.18.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {

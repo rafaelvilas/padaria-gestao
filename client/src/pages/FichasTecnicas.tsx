@@ -1,21 +1,25 @@
 import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { formatMoeda } from '@/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, BookOpen, Trash2, Edit } from 'lucide-react';
+import { Plus, Trash2, Edit, BookOpen } from 'lucide-react';
 import { toast } from 'sonner';
+
+// Ordem exibição das categorias
+const CATEGORIA_ORDER = ['PADARIA', 'CAFÉ', 'CONFEITARIA', 'SALGADOS', 'COZINHA', 'EXECUTIVO', 'PIZZARIA', 'BAR'];
 
 export function FichasTecnicas() {
   const [selectedProduto, setSelectedProduto] = useState<string | null>(null);
   const [fichaDialogOpen, setFichaDialogOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [activeTab, setActiveTab] = useState('todos');
   const [fichaForm, setFichaForm] = useState({
     rendimento: 1, unidadeRendimento: 'un', observacoes: '',
   });
@@ -35,9 +39,23 @@ export function FichasTecnicas() {
     onError: (e) => toast.error(e.message),
   });
 
-  const filtered = produtos.filter(p =>
-    p.nome.toLowerCase().includes(search.toLowerCase())
-  );
+  // Agrupamento por categoria
+  const categorias = Array.from(
+    new Map(produtos.map(p => [p.categoriaId ?? 'sem-cat', (p as any).categoria?.nome ?? 'Sem Categoria']))
+  ).sort(([, a], [, b]) => {
+    const ai = CATEGORIA_ORDER.indexOf(a.toUpperCase());
+    const bi = CATEGORIA_ORDER.indexOf(b.toUpperCase());
+    if (ai === -1 && bi === -1) return a.localeCompare(b);
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+
+  const filtered = produtos.filter(p => {
+    const matchSearch = p.nome.toLowerCase().includes(search.toLowerCase());
+    const matchTab = activeTab === 'todos' || (p as any).categoria?.nome === activeTab;
+    return matchSearch && matchTab;
+  }).sort((a, b) => a.nome.localeCompare(b.nome));
 
   function openFichaDialog(produtoId: string) {
     setSelectedProduto(produtoId);
@@ -54,52 +72,62 @@ export function FichasTecnicas() {
     }, 0);
   }
 
+  const totalComFicha = produtos.filter(p => p.temFichaTecnica).length;
+
+  // Quando "todos" e sem busca, agrupa por categoria; senão exibe flat
+  const showGrouped = activeTab === 'todos' && !search;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Fichas Técnicas</h1>
-          <p className="text-gray-500 text-sm mt-1">{produtos.filter(p => p.fichaAtiva).length} de {produtos.length} produtos com ficha</p>
+          <p className="text-gray-500 text-sm mt-1">{totalComFicha} de {produtos.length} produtos com ficha</p>
+        </div>
+        <div className="relative max-w-sm">
+          <Input placeholder="Buscar produto..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
       </div>
 
-      <div className="relative max-w-sm">
-        <Input placeholder="Buscar produto..." value={search} onChange={e => setSearch(e.target.value)} />
-      </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="flex-wrap h-auto gap-1">
+          <TabsTrigger value="todos">Todos ({produtos.length})</TabsTrigger>
+          {categorias.map(([catId, catNome]) => {
+            const count = produtos.filter(p => (p as any).categoria?.nome === catNome).length;
+            return (
+              <TabsTrigger key={catId} value={catNome}>
+                {catNome} ({count})
+              </TabsTrigger>
+            );
+          })}
+        </TabsList>
 
-      <div className="grid grid-cols-3 gap-4">
-        {filtered.map((p) => (
-          <Card key={p.id} className={p.fichaAtiva ? 'border-green-200' : 'border-gray-200'}>
-            <CardContent className="pt-4">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="font-semibold text-gray-800">{p.nome}</p>
-                  <p className="text-xs text-gray-500">{(p as any).categoria?.nome}</p>
-                </div>
-                {p.temFichaTecnica
-                  ? <Badge variant="success">Com ficha</Badge>
-                  : <Badge variant="secondary">Sem ficha</Badge>
-                }
-              </div>
-              <p className="text-sm text-gray-600 mb-3">
-                Preço venda: <span className="font-medium">{formatMoeda(p.precoVenda)}</span>
-              </p>
-              <Button
-                variant={p.temFichaTecnica ? 'outline' : 'default'}
-                size="sm"
-                className="w-full"
-                onClick={() => openFichaDialog(p.id)}
-              >
-                {p.temFichaTecnica ? (
-                  <><Edit className="w-3 h-3 mr-1" />Editar Ficha</>
-                ) : (
-                  <><Plus className="w-3 h-3 mr-1" />Criar Ficha</>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+        <TabsContent value={activeTab} className="mt-4">
+          {showGrouped ? (
+            // Vista agrupada: seções por categoria
+            <div className="space-y-8">
+              {categorias.map(([catId, catNome]) => {
+                const catProdutos = produtos
+                  .filter(p => (p as any).categoria?.nome === catNome)
+                  .sort((a, b) => a.nome.localeCompare(b.nome));
+                return (
+                  <div key={catId}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <h2 className="text-lg font-bold text-gray-800">{catNome}</h2>
+                      <span className="text-sm text-gray-400">{catProdutos.length} produtos</span>
+                      <div className="flex-1 h-px bg-gray-200" />
+                    </div>
+                    <ProdutoGrid produtos={catProdutos} onOpen={openFichaDialog} />
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            // Vista filtrada flat
+            <ProdutoGrid produtos={filtered} onOpen={openFichaDialog} />
+          )}
+        </TabsContent>
+      </Tabs>
 
       {/* Ficha Dialog */}
       <Dialog open={fichaDialogOpen} onOpenChange={setFichaDialogOpen}>
@@ -198,6 +226,54 @@ export function FichasTecnicas() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+// ── Componente auxiliar grid de produtos ────────────────────────────────────
+
+type Produto = {
+  id: string;
+  nome: string;
+  precoVenda: string | null;
+  temFichaTecnica: boolean;
+  categoria?: { nome: string } | null;
+};
+
+function ProdutoGrid({ produtos, onOpen }: { produtos: Produto[]; onOpen: (id: string) => void }) {
+  if (produtos.length === 0) {
+    return <p className="text-center text-gray-400 py-8">Nenhum produto encontrado</p>;
+  }
+  return (
+    <div className="grid grid-cols-3 gap-4">
+      {produtos.map((p) => (
+        <Card key={p.id} className={p.temFichaTecnica ? 'border-green-200' : 'border-gray-200'}>
+          <CardContent className="pt-4">
+            <div className="flex items-start justify-between mb-3">
+              <p className="font-semibold text-gray-800 text-sm leading-tight">{p.nome}</p>
+              {p.temFichaTecnica
+                ? <Badge variant="success" className="text-xs shrink-0 ml-2">Com ficha</Badge>
+                : <Badge variant="secondary" className="text-xs shrink-0 ml-2">Sem ficha</Badge>
+              }
+            </div>
+            <p className="text-sm text-gray-600 mb-3">
+              Preço venda: <span className="font-medium">{formatMoeda(Number(p.precoVenda || 0))}</span>
+            </p>
+            <Button
+              variant={p.temFichaTecnica ? 'outline' : 'default'}
+              size="sm"
+              className="w-full"
+              onClick={() => onOpen(p.id)}
+            >
+              {p.temFichaTecnica ? (
+                <><Edit className="w-3 h-3 mr-1" />Ver / Editar</>
+              ) : (
+                <><Plus className="w-3 h-3 mr-1" />Criar Ficha</>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }

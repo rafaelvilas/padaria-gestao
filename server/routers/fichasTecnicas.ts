@@ -2,13 +2,13 @@ import { z } from 'zod';
 import { router, publicProcedure } from '../_core/trpc';
 import { db } from '../db';
 import { fichasTecnicas, itensFichaTecnica, produtos, insumos, categoriasProduto } from '../db/schema';
-import { eq, desc, and } from 'drizzle-orm';
+import { eq, desc, and, asc } from 'drizzle-orm';
 
 export const fichasTecnicasRouter = router({
   listProdutos: publicProcedure
     .query(async () => {
       const prods = await db.query.produtos.findMany({
-        orderBy: [desc(produtos.criadoEm)],
+        orderBy: [asc(produtos.nome)],
       });
       return await Promise.all(prods.map(async (p) => {
         const cat = p.categoriaId ? await db.query.categoriasProduto.findFirst({ where: eq(categoriasProduto.id, p.categoriaId) }) : null;
