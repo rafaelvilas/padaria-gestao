@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cotação Comparativa — Seguro Auto | Renovação</title>
+<style>
+  :root{
+    --azul:#0b3d91;
+    --azul-claro:#1565c0;
+    --cinza:#f4f6f9;
+    --cinza-borda:#e1e6ef;
+    --texto:#23303f;
+    --texto-suave:#5c6b7a;
+    --verde:#1b7d4f;
+    --verde-bg:#e7f6ee;
+    --ambar:#9a6b00;
+    --ambar-bg:#fdf3df;
+    --vermelho:#b3261e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--texto);
+    background:#eef1f6;
+    line-height:1.55;
+    font-size:15px;
+  }
+  .pagina{
+    max-width:1080px;
+    margin:24px auto;
+    background:#fff;
+    box-shadow:0 6px 28px rgba(11,61,145,.08);
+    border-radius:14px;
+    overflow:hidden;
+  }
+
+  /* Cabeçalho */
+  header{
+    background:linear-gradient(135deg,var(--azul) 0%,var(--azul-claro) 100%);
+    color:#fff;
+    padding:32px 40px 28px;
+  }
+  .topo{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+  .marca .corretora{font-size:22px;font-weight:700;letter-spacing:.3px}
+  .marca .sub{font-size:13px;opacity:.85;margin-top:2px}
+  .doc-meta{text-align:right;font-size:13px;opacity:.92}
+  .doc-meta .tag{
+    display:inline-block;background:rgba(255,255,255,.18);
+    padding:4px 12px;border-radius:20px;font-weight:600;letter-spacing:.4px;margin-bottom:8px;font-size:12px;
+  }
+  header h1{font-size:26px;font-weight:700;margin-top:22px}
+  header .lead{font-size:14.5px;opacity:.9;margin-top:6px;max-width:680px}
+
+  /* Seções */
+  section{padding:28px 40px}
+  .titulo-secao{
+    font-size:13px;text-transform:uppercase;letter-spacing:1.4px;
+    color:var(--azul);font-weight:700;margin-bottom:16px;
+    border-left:4px solid var(--azul-claro);padding-left:12px;
+  }
+
+  /* Cartões de dados */
+  .grid-dados{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .campo{background:var(--cinza);border:1px solid var(--cinza-borda);border-radius:10px;padding:12px 16px}
+  .campo .rot{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--texto-suave);font-weight:600}
+  .campo .val{font-size:15px;font-weight:600;margin-top:3px}
+
+  /* Cards de seguradoras */
+  .cards-seguradoras{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{
+    border:1px solid var(--cinza-borda);border-radius:14px;overflow:hidden;
+    display:flex;flex-direction:column;position:relative;
+  }
+  .card.destaque{border:2px solid var(--verde);box-shadow:0 4px 18px rgba(27,125,79,.14)}
+  .selo{
+    position:absolute;top:0;right:0;background:var(--verde);color:#fff;
+    font-size:11px;font-weight:700;letter-spacing:.5px;padding:5px 14px;border-bottom-left-radius:10px;
+  }
+  .card-cab{padding:18px 18px 14px;border-bottom:1px solid var(--cinza-borda)}
+  .card-cab .seg{font-size:18px;font-weight:700;color:var(--azul)}
+  .card-cab .prod{font-size:12.5px;color:var(--texto-suave);margin-top:1px}
+  .preco{padding:16px 18px;background:var(--cinza)}
+  .preco .de{font-size:12px;color:var(--texto-suave)}
+  .preco .total{font-size:27px;font-weight:800;color:var(--texto);line-height:1.1}
+  .preco .total small{font-size:14px;font-weight:600;color:var(--texto-suave)}
+  .preco .parc{font-size:13px;color:var(--verde);font-weight:600;margin-top:4px}
+  .preco .avista{font-size:12.5px;color:var(--texto-suave);margin-top:2px}
+  .card-corpo{padding:14px 18px;flex:1}
+  .linha{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--cinza-borda);font-size:13.5px}
+  .linha:last-child{border-bottom:none}
+  .linha .k{color:var(--texto-suave)}
+  .linha .v{font-weight:600;text-align:right}
+  .na{color:var(--ambar);font-weight:600}
+
+  /* Tabela comparativa */
+  table.comp{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.comp th,table.comp td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--cinza-borda)}
+  table.comp thead th{background:var(--azul);color:#fff;font-weight:600;font-size:13px}
+  table.comp thead th:first-child{border-top-left-radius:8px}
+  table.comp thead th:last-child{border-top-right-radius:8px}
+  table.comp tbody tr:nth-child(even){background:#fafbfd}
+  table.comp td.cob{font-weight:600;color:var(--texto)}
+  table.comp .grupo td{background:var(--cinza);font-weight:700;color:var(--azul);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  table.comp tr.total-row td{background:#eaf1fb;font-weight:800;font-size:15px;color:var(--azul)}
+  .center{text-align:center}
+
+  /* Caixas de aviso */
+  .aviso{border-radius:10px;padding:14px 18px;font-size:13.5px;margin-top:18px;display:flex;gap:12px;align-items:flex-start}
+  .aviso .ic{font-size:18px;line-height:1.2}
+  .aviso.atencao{background:var(--ambar-bg);border:1px solid #f0d99a;color:var(--ambar)}
+  .aviso.info{background:#eaf2fb;border:1px solid #c6dcf5;color:var(--azul)}
+
+  /* Recomendação */
+  .recomendacao{background:var(--verde-bg);border:1px solid #bce5cf;border-radius:12px;padding:22px 24px}
+  .recomendacao h3{color:var(--verde);font-size:17px;margin-bottom:8px}
+  .recomendacao p{font-size:14px;margin-bottom:8px}
+  .recomendacao strong{color:var(--verde)}
+
+  /* Rodapé */
+  footer{background:var(--cinza);padding:24px 40px;font-size:12px;color:var(--texto-suave);border-top:1px solid var(--cinza-borda)}
+  footer .assin{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:14px}
+  footer .assin .bloco strong{color:var(--texto);display:block;font-size:13px}
+  .disclaimer{line-height:1.5}
+
+  @media (max-width:820px){
+    .cards-seguradoras{grid-template-columns:1fr}
+    section,header,footer{padding-left:22px;padding-right:22px}
+    table.comp{font-size:12.5px}
+    table.comp th,table.comp td{padding:8px 9px}
+  }
+  @media print{
+    body{background:#fff;font-size:12.5px}
+    .pagina{box-shadow:none;margin:0;max-width:100%;border-radius:0}
+    .card.destaque{box-shadow:none}
+    header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    table.comp thead th,.recomendacao,.preco,.campo,.aviso,.grupo td,.total-row td,.selo{
+      -webkit-print-color-adjust:exact;print-color-adjust:exact}
+    section{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="pagina">
+
+  <!-- CABEÇALHO -->
+  <header>
+    <div class="topo">
+      <div class="marca">
+        <div class="corretora">SRO Brokers Corretora de Seguros</div>
+        <div class="sub">Assessoria em Seguros · SUSEP 202041230</div>
+      </div>
+      <div class="doc-meta">
+        <span class="tag">COTAÇÃO COMPARATIVA</span><br>
+        Emissão: 18/06/2026<br>
+        Ref.: Renovação Seguro Auto
+      </div>
+    </div>
+    <h1>Comparativo de Seguro Auto — Renovação</h1>
+    <p class="lead">Apresentamos a seguir o comparativo das propostas obtidas junto às seguradoras para a renovação do seguro do seu veículo. Avalie as coberturas, franquias, assistências e condições de pagamento antes de decidir.</p>
+  </header>
+
+  <!-- DADOS DO SEGURADO E VEÍCULO -->
+  <section>
+    <div class="titulo-secao">Dados do Segurado e do Veículo</div>
+    <div class="grid-dados">
+      <div class="campo"><div class="rot">Segurado</div><div class="val">Ricardo Mesquita Garcia</div></div>
+      <div class="campo"><div class="rot">CPF</div><div class="val">085.300.438-20</div></div>
+      <div class="campo"><div class="rot">Nascimento / Idade</div><div class="val">28/03/1962 · 64 anos</div></div>
+      <div class="campo"><div class="rot">Principal Condutor</div><div class="val">Ricardo Mesquita Garcia</div></div>
+      <div class="campo"><div class="rot">Veículo</div><div class="val">VW Tiguan Allspace R-Line 350 2.0 TSi 4MOTION DSG</div></div>
+      <div class="campo"><div class="rot">Ano Fab./Modelo</div><div class="val">2019 / 2020 · Gasolina</div></div>
+      <div class="campo"><div class="rot">Placa / Chassi</div><div class="val">GFI4A08 · final 27723</div></div>
+      <div class="campo"><div class="rot">Código FIPE</div><div class="val">005489-5</div></div>
+      <div class="campo"><div class="rot">CEP de Pernoite</div><div class="val">04560-002 — São Paulo/SP</div></div>
+      <div class="campo"><div class="rot">Uso / Classe de Bônus</div><div class="val">Particular · Bônus 10</div></div>
+      <div class="campo"><div class="rot">Tipo de Seguro</div><div class="val">Renovação congênere (sem sinistro)</div></div>
+      <div class="campo"><div class="rot">Vigência Proposta</div><div class="val">20/06/2026 a 20/06/2027</div></div>
+    </div>
+  </section>
+
+  <!-- CARDS DAS SEGURADORAS -->
+  <section style="padding-top:6px">
+    <div class="titulo-secao">Resumo das Propostas</div>
+    <div class="cards-seguradoras">
+
+      <!-- ALLIANZ -->
+      <div class="card destaque">
+        <span class="selo">★ MELHOR CUSTO-BENEFÍCIO</span>
+        <div class="card-cab">
+          <div class="seg">Allianz Seguros</div>
+          <div class="prod">Plano Master · Cotação 483594990</div>
+        </div>
+        <div class="preco">
+          <div class="de">Prêmio total anual</div>
+          <div class="total">R$ 5.933,98</div>
+          <div class="parc">10x de R$ 593,39 sem juros (cartão)</div>
+          <div class="avista">À vista: R$ 5.933,98</div>
+        </div>
+        <div class="card-corpo">
+          <div class="linha"><span class="k">Casco (Compreensiva)</span><span class="v">100% FIPE</span></div>
+          <div class="linha"><span class="k">Franquia Casco</span><span class="v">R$ 7.603,11</span></div>
+          <div class="linha"><span class="k">RCF Danos Materiais</span><span class="v">R$ 400.000</span></div>
+          <div class="linha"><span class="k">RCF Danos Corporais</span><span class="v">R$ 400.000</span></div>
+          <div class="linha"><span class="k">Danos Morais/Estéticos</span><span class="v">R$ 60.000</span></div>
+          <div class="linha"><span class="k">APP Morte/Invalidez</span><span class="v">R$ 30.000</span></div>
+          <div class="linha"><span class="k">Vidros</span><span class="v">Plano 3 (completo)</span></div>
+          <div class="linha"><span class="k">Carro Reserva</span><span class="v">45 dias · Intermediário</span></div>
+          <div class="linha"><span class="k">Assistência 24h</span><span class="v">Plano 3 · Guincho Km livre</span></div>
+        </div>
+      </div>
+
+      <!-- PORTO SEGURO -->
+      <div class="card">
+        <div class="card-cab">
+          <div class="seg">Porto Seguro</div>
+          <div class="prod">Auto Sênior · Orçamento 5886095853-0-1</div>
+        </div>
+        <div class="preco">
+          <div class="de">Prêmio total anual</div>
+          <div class="total">R$ 6.035,23</div>
+          <div class="parc">12x sem juros (Cartão Porto Bank)</div>
+          <div class="avista">À vista c/ Cartão Porto Bank: R$ 5.223,36*</div>
+        </div>
+        <div class="card-corpo">
+          <div class="linha"><span class="k">Casco (Compreensiva)</span><span class="v">100% FIPE</span></div>
+          <div class="linha"><span class="k">Franquia Casco</span><span class="v">R$ 9.064,00</span></div>
+          <div class="linha"><span class="k">RCF Danos Materiais</span><span class="v">R$ 250.000</span></div>
+          <div class="linha"><span class="k">RCF Danos Corporais</span><span class="v">R$ 300.000</span></div>
+          <div class="linha"><span class="k">Danos Morais/Estéticos</span><span class="na">Não incluído</span></div>
+          <div class="linha"><span class="k">APP Morte/Invalidez</span><span class="na">Não incluído</span></div>
+          <div class="linha"><span class="k">Vidros</span><span class="v">LMI R$ 25.000 (referenciada)</span></div>
+          <div class="linha"><span class="k">Carro Reserva</span><span class="v">30 dias · porte médio/aut.</span></div>
+          <div class="linha"><span class="k">Assistência 24h</span><span class="v">Essencial · Km ilimitado</span></div>
+        </div>
+      </div>
+
+      <!-- MAPFRE -->
+      <div class="card">
+        <div class="card-cab">
+          <div class="seg">MAPFRE</div>
+          <div class="prod">Auto 231 · Cotação 2606270521369</div>
+        </div>
+        <div class="preco">
+          <div class="de">Prêmio total anual</div>
+          <div class="total"><small>Sob consulta</small></div>
+          <div class="avista" style="color:var(--ambar)">Valores não constam no documento recebido</div>
+        </div>
+        <div class="card-corpo">
+          <div class="linha"><span class="k">Casco (Compreensiva)</span><span class="v">100% FIPE (Valor de Mercado)</span></div>
+          <div class="linha"><span class="k">Franquia Casco</span><span class="na">A confirmar</span></div>
+          <div class="linha"><span class="k">RCF Danos Materiais</span><span class="na">A confirmar</span></div>
+          <div class="linha"><span class="k">RCF Danos Corporais</span><span class="na">A confirmar</span></div>
+          <div class="linha"><span class="k">Danos Morais/Estéticos</span><span class="na">A confirmar</span></div>
+          <div class="linha"><span class="k">APP Morte/Invalidez</span><span class="na">A confirmar</span></div>
+          <div class="linha"><span class="k">Vidros</span><span class="v">Cobertura informada (franquias detalhadas)</span></div>
+          <div class="linha"><span class="k">Carro Reserva</span><span class="na">A confirmar</span></div>
+          <div class="linha"><span class="k">Assistência 24h</span><span class="na">A confirmar</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="aviso atencao">
+      <span class="ic">⚠️</span>
+      <div><strong>Cotação MAPFRE incompleta:</strong> o arquivo recebido contém apenas os dados do segurado, do veículo e as franquias de vidros — os limites de cobertura e o valor do prêmio <strong>não constavam no documento</strong>. Solicitaremos a versão completa à seguradora para incluí-la na comparação. Os demais valores são meramente indicativos até a confirmação.</div>
+    </div>
+    <div class="aviso info">
+      <span class="ic">ℹ️</span>
+      <div>*Porto Seguro: o valor à vista de R$ 5.223,36 considera o pagamento em 1x com Cartão Porto Bank (até 15% de desconto + 5% à vista). No boleto/demais formas, o prêmio à vista é de R$ 6.035,23.</div>
+    </div>
+  </section>
+
+  <!-- TABELA COMPARATIVA DETALHADA -->
+  <section style="padding-top:6px">
+    <div class="titulo-secao">Comparativo Detalhado de Coberturas</div>
+    <table class="comp">
+      <thead>
+        <tr>
+          <th style="width:34%">Cobertura / Item</th>
+          <th>Allianz (Master)</th>
+          <th>Porto Seguro (Sênior)</th>
+          <th>MAPFRE (Auto 231)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="grupo"><td colspan="4">Casco — Compreensiva (Colisão, Incêndio, Roubo e Furto)</td></tr>
+        <tr><td class="cob">Limite de indenização</td><td>100% Tabela FIPE</td><td>100% Tabela FIPE</td><td>100% FIPE (Valor de Mercado)</td></tr>
+        <tr><td class="cob">Franquia (perda parcial)</td><td>R$ 7.603,11 <small>(50% da normal)</small></td><td>R$ 9.064,00 <small>(50% da obrig.)</small></td><td class="na">A confirmar</td></tr>
+
+        <tr class="grupo"><td colspan="4">Responsabilidade Civil Facultativa (RCF-V)</td></tr>
+        <tr><td class="cob">Danos Materiais a Terceiros</td><td>R$ 400.000,00</td><td>R$ 250.000,00</td><td class="na">A confirmar</td></tr>
+        <tr><td class="cob">Danos Corporais a Terceiros</td><td>R$ 400.000,00</td><td>R$ 300.000,00</td><td class="na">A confirmar</td></tr>
+        <tr><td class="cob">Danos Morais e Estéticos</td><td>R$ 60.000,00</td><td class="na">Não incluído</td><td class="na">A confirmar</td></tr>
+        <tr><td class="cob">Custos / Gastos com Defesa</td><td>R$ 40.000,00</td><td>R$ 20.000,00</td><td class="na">A confirmar</td></tr>
+
+        <tr class="grupo"><td colspan="4">Acidentes Pessoais de Passageiros (APP)</td></tr>
+        <tr><td class="cob">Morte</td><td>R$ 30.000,00</td><td class="na">Não incluído</td><td class="na">A confirmar</td></tr>
+        <tr><td class="cob">Invalidez Permanente</td><td>R$ 30.000,00</td><td class="na">Não incluído</td><td class="na">A confirmar</td></tr>
+
+        <tr class="grupo"><td colspan="4">Coberturas Adicionais e Serviços</td></tr>
+        <tr><td class="cob">Vidros, faróis, lanternas e retrovisores</td><td>Plano 3 (completo)</td><td>Referenciada · LMI R$ 25.000</td><td>Incluída (franquias detalhadas)</td></tr>
+        <tr><td class="cob">Carro Reserva</td><td>45 dias · Intermediário</td><td>30 dias · médio/automático</td><td class="na">A confirmar</td></tr>
+        <tr><td class="cob">Assistência 24h</td><td>Plano 3 · Guincho Km livre</td><td>Essencial · Km ilimitado</td><td class="na">A confirmar</td></tr>
+        <tr><td class="cob">Assistência Residencial</td><td>Incluída (gratuita)</td><td>Incluída (serviços à residência)</td><td class="na">A confirmar</td></tr>
+
+        <tr class="grupo"><td colspan="4">Prêmio e Pagamento</td></tr>
+        <tr><td class="cob">Prêmio líquido</td><td>R$ 5.526,15</td><td>R$ 5.620,44</td><td class="na">A confirmar</td></tr>
+        <tr><td class="cob">IOF</td><td>R$ 407,83</td><td>R$ 414,79</td><td class="na">A confirmar</td></tr>
+        <tr class="total-row"><td class="cob">Prêmio total anual</td><td>R$ 5.933,98</td><td>R$ 6.035,23</td><td class="na">Sob consulta</td></tr>
+        <tr><td class="cob">Parcelamento sem juros</td><td>Até 10x (R$ 593,39) no cartão</td><td>Até 12x (Cartão Porto Bank)</td><td class="na">A confirmar</td></tr>
+        <tr><td class="cob">Validade da cotação</td><td>25/06/2026</td><td>20/07/2026</td><td>24/06/2026</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- RECOMENDAÇÃO -->
+  <section style="padding-top:6px">
+    <div class="titulo-secao">Análise e Recomendação Técnica</div>
+    <div class="recomendacao">
+      <h3>Nossa recomendação: Allianz Seguros — Plano Master</h3>
+      <p>Com prêmio total de <strong>R$ 5.933,98</strong> (cerca de R$ 100 abaixo da Porto Seguro), a <strong>Allianz</strong> oferece o pacote de coberturas mais completo do comparativo, com destaque para:</p>
+      <p>• <strong>Limites de RCF mais altos</strong> — R$ 400 mil para danos materiais e corporais, contra R$ 250 mil/R$ 300 mil da Porto;<br>
+         • <strong>Danos Morais e Estéticos (R$ 60 mil) e APP (R$ 30 mil)</strong> inclusos — ambos ausentes na proposta Porto Seguro;<br>
+         • <strong>Franquia de casco menor</strong> (R$ 7.603,11 vs. R$ 9.064,00);<br>
+         • <strong>Carro reserva por mais tempo</strong> (45 dias vs. 30 dias).</p>
+      <p>A <strong>Porto Seguro</strong> permanece uma alternativa sólida, sobretudo pelo amplo pacote de serviços-cortesia (Centro Automotivo, cristalização, descontos na franquia) e pela melhor condição à vista para correntistas com Cartão Porto Bank (R$ 5.223,36). Já a <strong>MAPFRE</strong> só poderá ser avaliada após o envio da cotação completa com limites e prêmio.</p>
+    </div>
+  </section>
+
+  <!-- RODAPÉ -->
+  <footer>
+    <div class="assin">
+      <div class="bloco">
+        <strong>Corretor responsável</strong>
+        SRO Brokers Corretora de Seguros Ltda.<br>
+        Luiz Oliverio · (11) 3388-7600<br>
+        luizoliverio@sroseguros.com.br
+      </div>
+      <div class="bloco">
+        <strong>Seguradoras cotadas</strong>
+        Allianz Seguros S.A. · Porto Seguro Cia. de Seguros Gerais<br>
+        MAPFRE Seguros Gerais S.A.
+      </div>
+    </div>
+    <p class="disclaimer">
+      Este documento é um comparativo elaborado a partir das cotações fornecidas pelas seguradoras em 18/06/2026 e tem caráter meramente informativo, não constituindo proposta ou garantia de contratação. Os valores, coberturas e condições estão sujeitos a análise e aceitação de risco pela seguradora, podendo sofrer alterações até a emissão da apólice, inclusive em razão de vistoria prévia. Cada cotação possui prazo de validade próprio (indicado na tabela). Em caso de divergência, prevalecem as Condições Gerais de cada produto e os documentos oficiais emitidos por cada seguradora. Recomenda-se a leitura integral das Condições Gerais antes da contratação. Processos SUSEP — Allianz: 15414.002216/2004-57 · Porto Seguro: 15414.100233/2004-59 · MAPFRE: 15414.100326/2004-83.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>
