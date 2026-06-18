@@ -103,6 +103,8 @@
   table.comp td.cob{font-weight:600;color:var(--texto)}
   table.comp .grupo td{background:var(--cinza);font-weight:700;color:var(--azul);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
   table.comp tr.total-row td{background:#eaf1fb;font-weight:800;font-size:15px;color:var(--azul)}
+  table.comp td.porto-destaque{background:var(--verde-bg);font-weight:700;color:var(--verde)}
+  table.comp td.porto-destaque small{color:var(--verde);font-weight:600}
   .center{text-align:center}
 
   /* Caixas de aviso */
@@ -110,6 +112,9 @@
   .aviso .ic{font-size:18px;line-height:1.2}
   .aviso.atencao{background:var(--ambar-bg);border:1px solid #f0d99a;color:var(--ambar)}
   .aviso.info{background:#eaf2fb;border:1px solid #c6dcf5;color:var(--azul)}
+  .aviso.destaque-porto{background:var(--verde-bg);border:1px solid #bce5cf;color:var(--verde);font-size:14px}
+  .aviso.destaque-porto strong{color:#145c39}
+  .risco{text-decoration:line-through;opacity:.7;font-weight:600}
 
   /* Recomendação */
   .recomendacao{background:var(--verde-bg);border:1px solid #bce5cf;border-radius:12px;padding:22px 24px}
@@ -185,8 +190,7 @@
     <div class="cards-seguradoras">
 
       <!-- ALLIANZ -->
-      <div class="card destaque">
-        <span class="selo">★ MELHOR CUSTO-BENEFÍCIO</span>
+      <div class="card">
         <div class="card-cab">
           <div class="seg">Allianz Seguros</div>
           <div class="prod">Plano Master · Cotação 483594990</div>
@@ -243,30 +247,31 @@
         </div>
         <div class="preco">
           <div class="de">Prêmio total anual</div>
-          <div class="total"><small>Sob consulta</small></div>
-          <div class="avista" style="color:var(--ambar)">Valor do prêmio a confirmar com a seguradora</div>
+          <div class="total">R$ 3.721,99</div>
+          <div class="parc">12x de R$ 310,17 sem juros (cartão)</div>
+          <div class="avista">À vista: R$ 3.721,99</div>
         </div>
         <div class="card-corpo">
           <div class="linha"><span class="k">Casco (Compreensiva)</span><span class="v">100% FIPE (Valor de Mercado)</span></div>
-          <div class="linha"><span class="k">Franquia Casco</span><span class="v">R$ 9.064,00</span></div>
+          <div class="linha"><span class="k">Franquia Casco</span><span class="v">R$ 9.415,33</span></div>
           <div class="linha"><span class="k">RCF Danos Materiais</span><span class="v">R$ 250.000</span></div>
           <div class="linha"><span class="k">RCF Danos Corporais</span><span class="v">R$ 300.000</span></div>
-          <div class="linha"><span class="k">Danos Morais/Estéticos</span><span class="na">Não incluído</span></div>
+          <div class="linha"><span class="k">Danos Morais/Estéticos</span><span class="v">R$ 5.000</span></div>
           <div class="linha"><span class="k">APP Morte/Invalidez</span><span class="na">Não incluído</span></div>
-          <div class="linha"><span class="k">Vidros</span><span class="v">LMI R$ 25.000 (referenciada)</span></div>
-          <div class="linha"><span class="k">Carro Reserva</span><span class="v">30 dias · porte médio/aut.</span></div>
-          <div class="linha"><span class="k">Assistência 24h</span><span class="v">Essencial · Km ilimitado</span></div>
+          <div class="linha"><span class="k">Vidros</span><span class="v">Top Plus (contratada)</span></div>
+          <div class="linha"><span class="k">Carro Reserva</span><span class="v">30 dias · Intermediário</span></div>
+          <div class="linha"><span class="k">Assistência 24h</span><span class="v">Até 250 km · Reboque ilimitado</span></div>
         </div>
       </div>
 
     </div>
-    <div class="aviso atencao">
-      <span class="ic">⚠️</span>
-      <div><strong>MAPFRE:</strong> as coberturas foram consideradas equivalentes às da Porto Seguro para fins de comparação. O <strong>valor do prêmio não constava no documento recebido</strong> e será confirmado junto à seguradora.</div>
+    <div class="aviso destaque-porto">
+      <span class="ic">💳</span>
+      <div><strong>Benefício Porto Seguro — pagamento à vista no Cartão Porto Bank:</strong> ao pagar em 1x com o Cartão Porto Bank, o prêmio cai de <span class="risco">R$ 6.035,23</span> para <strong>R$ 5.223,36</strong> — um desconto de até 15% + 5% à vista, equivalente a uma economia de <strong>R$ 811,87</strong>. É a maior redução por forma de pagamento entre as três propostas.</div>
     </div>
     <div class="aviso info">
       <span class="ic">ℹ️</span>
-      <div>*Porto Seguro: o valor à vista de R$ 5.223,36 considera o pagamento em 1x com Cartão Porto Bank (até 15% de desconto + 5% à vista). No boleto/demais formas, o prêmio à vista é de R$ 6.035,23.</div>
+      <div>Coberturas, limites e franquias podem variar conforme o produto de cada seguradora. Os valores de prêmio consideram as condições vigentes em 18/06/2026, sujeitas à validade de cada cotação.</div>
     </div>
   </section>
 
@@ -285,29 +290,31 @@
       <tbody>
         <tr class="grupo"><td colspan="4">Casco — Compreensiva (Colisão, Incêndio, Roubo e Furto)</td></tr>
         <tr><td class="cob">Limite de indenização</td><td>100% Tabela FIPE</td><td>100% Tabela FIPE</td><td>100% FIPE (Valor de Mercado)</td></tr>
-        <tr><td class="cob">Franquia (perda parcial)</td><td>R$ 7.603,11 <small>(50% da normal)</small></td><td>R$ 9.064,00 <small>(50% da obrig.)</small></td><td>R$ 9.064,00</td></tr>
+        <tr><td class="cob">Franquia (perda parcial)</td><td>R$ 7.603,11 <small>(50% da normal)</small></td><td>R$ 9.064,00 <small>(50% da obrig.)</small></td><td>R$ 9.415,33 <small>(reduzida 50%)</small></td></tr>
 
         <tr class="grupo"><td colspan="4">Responsabilidade Civil Facultativa (RCF-V)</td></tr>
         <tr><td class="cob">Danos Materiais a Terceiros</td><td>R$ 400.000,00</td><td>R$ 250.000,00</td><td>R$ 250.000,00</td></tr>
         <tr><td class="cob">Danos Corporais a Terceiros</td><td>R$ 400.000,00</td><td>R$ 300.000,00</td><td>R$ 300.000,00</td></tr>
-        <tr><td class="cob">Danos Morais e Estéticos</td><td>R$ 60.000,00</td><td class="na">Não incluído</td><td class="na">Não incluído</td></tr>
-        <tr><td class="cob">Custos / Gastos com Defesa</td><td>R$ 40.000,00</td><td>R$ 20.000,00</td><td>R$ 20.000,00</td></tr>
+        <tr><td class="cob">Danos Morais e Estéticos</td><td>R$ 60.000,00</td><td class="na">Não incluído</td><td>R$ 5.000,00</td></tr>
+        <tr><td class="cob">Custos / Gastos com Defesa</td><td>R$ 40.000,00</td><td>R$ 20.000,00</td><td class="na">Não incluído</td></tr>
+        <tr><td class="cob">Objetos transportados</td><td class="na">Não incluído</td><td class="na">Não incluído</td><td>Incluído (gratuito)</td></tr>
 
         <tr class="grupo"><td colspan="4">Acidentes Pessoais de Passageiros (APP)</td></tr>
         <tr><td class="cob">Morte</td><td>R$ 30.000,00</td><td class="na">Não incluído</td><td class="na">Não incluído</td></tr>
         <tr><td class="cob">Invalidez Permanente</td><td>R$ 30.000,00</td><td class="na">Não incluído</td><td class="na">Não incluído</td></tr>
 
         <tr class="grupo"><td colspan="4">Coberturas Adicionais e Serviços</td></tr>
-        <tr><td class="cob">Vidros, faróis, lanternas e retrovisores</td><td>Plano 3 (completo)</td><td>Referenciada · LMI R$ 25.000</td><td>Referenciada · LMI R$ 25.000</td></tr>
-        <tr><td class="cob">Carro Reserva</td><td>45 dias · Intermediário</td><td>30 dias · médio/automático</td><td>30 dias · médio/automático</td></tr>
-        <tr><td class="cob">Assistência 24h</td><td>Plano 3 · Guincho Km livre</td><td>Essencial · Km ilimitado</td><td>Essencial · Km ilimitado</td></tr>
-        <tr><td class="cob">Assistência Residencial</td><td>Incluída (gratuita)</td><td>Incluída (serviços à residência)</td><td>Incluída (serviços à residência)</td></tr>
+        <tr><td class="cob">Vidros, faróis, lanternas e retrovisores</td><td>Plano 3 (completo)</td><td>Referenciada · LMI R$ 25.000</td><td>Top Plus (contratada)</td></tr>
+        <tr><td class="cob">Carro Reserva</td><td>45 dias · Intermediário</td><td>30 dias · médio/automático</td><td>30 dias · Intermediário</td></tr>
+        <tr><td class="cob">Assistência 24h</td><td>Plano 3 · Guincho Km livre</td><td>Essencial · Km ilimitado</td><td>Até 250 km · Reboque ilimitado</td></tr>
+        <tr><td class="cob">Assistência Residencial</td><td>Incluída (gratuita)</td><td>Incluída (serviços à residência)</td><td>Incluída (Assistência Casa)</td></tr>
 
         <tr class="grupo"><td colspan="4">Prêmio e Pagamento</td></tr>
-        <tr><td class="cob">Prêmio líquido</td><td>R$ 5.526,15</td><td>R$ 5.620,44</td><td class="na">A confirmar</td></tr>
-        <tr><td class="cob">IOF</td><td>R$ 407,83</td><td>R$ 414,79</td><td class="na">A confirmar</td></tr>
-        <tr class="total-row"><td class="cob">Prêmio total anual</td><td>R$ 5.933,98</td><td>R$ 6.035,23</td><td class="na">Sob consulta</td></tr>
-        <tr><td class="cob">Parcelamento sem juros</td><td>Até 10x (R$ 593,39) no cartão</td><td>Até 12x (Cartão Porto Bank)</td><td class="na">A confirmar</td></tr>
+        <tr><td class="cob">Prêmio líquido</td><td>R$ 5.526,15</td><td>R$ 5.620,44</td><td>R$ 3.466,19</td></tr>
+        <tr><td class="cob">IOF</td><td>R$ 407,83</td><td>R$ 414,79</td><td>R$ 255,80</td></tr>
+        <tr class="total-row"><td class="cob">Prêmio total anual</td><td>R$ 5.933,98</td><td>R$ 6.035,23</td><td>R$ 3.721,99</td></tr>
+        <tr><td class="cob">Melhor preço à vista</td><td>R$ 5.933,98</td><td class="porto-destaque">R$ 5.223,36 <small>(Cartão Porto Bank · −R$ 811,87)</small></td><td>R$ 3.721,99</td></tr>
+        <tr><td class="cob">Parcelamento sem juros</td><td>Até 10x (R$ 593,39) no cartão</td><td>Até 12x (Cartão Porto Bank)</td><td>Até 12x (R$ 310,17) no cartão</td></tr>
         <tr><td class="cob">Validade da cotação</td><td>25/06/2026</td><td>20/07/2026</td><td>24/06/2026</td></tr>
       </tbody>
     </table>
