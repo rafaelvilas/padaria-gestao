@@ -1,0 +1,431 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cotação de Seguro — Frota ALUMINC</title>
+<style>
+  :root{
+    --bg:#0d1117; --bg2:#131a24; --card:#161d29; --card2:#1c2532;
+    --line:#26303f; --line2:#324055;
+    --txt:#e8edf4; --muted:#93a1b5; --muted2:#6b7a90;
+    --brand:#2dd4bf; --brand-d:#0d9488;
+    --gold:#fbbf24; --green:#34d399; --red:#f87171; --blue:#60a5fa;
+    --sh:0 8px 30px rgba(0,0,0,.35);
+    --r:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 80% -10%,rgba(45,212,191,.08),transparent),
+               radial-gradient(900px 500px at 0% 0%,rgba(96,165,250,.06),transparent),
+               var(--bg);
+    color:var(--txt); line-height:1.5; padding-bottom:60px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+
+  /* HEADER */
+  header{padding:34px 0 22px;border-bottom:1px solid var(--line)}
+  .eyebrow{color:var(--brand);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+  h1{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em;margin:6px 0 4px;line-height:1.1}
+  .sub{color:var(--muted);font-size:15px;max-width:640px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:18px}
+  .meta div{font-size:13px;color:var(--muted2)}
+  .meta b{color:var(--txt);font-weight:600}
+
+  /* CAR SWITCHER */
+  .switch-label{margin:30px 0 12px;font-size:13px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+  .cars{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:720px){.cars{grid-template-columns:1fr}}
+  .car{
+    position:relative;cursor:pointer;text-align:left;
+    background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);
+    padding:18px 18px 16px;transition:.18s;overflow:hidden
+  }
+  .car:hover{border-color:var(--line2);transform:translateY(-2px)}
+  .car.active{border-color:var(--brand);background:linear-gradient(180deg,rgba(45,212,191,.10),rgba(45,212,191,.02))}
+  .car.active:after{content:"";position:absolute;inset:0;border-radius:var(--r);box-shadow:inset 0 0 0 1.5px var(--brand);pointer-events:none}
+  .car .emoji{font-size:26px}
+  .car .cname{font-weight:800;font-size:18px;margin-top:6px}
+  .car .cdesc{color:var(--muted);font-size:12.5px;margin-top:2px}
+  .car .cbadge{display:inline-block;margin-top:10px;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:20px}
+  .b-ok{background:rgba(52,211,153,.14);color:var(--green)}
+  .b-fleet{background:rgba(96,165,250,.14);color:var(--blue)}
+  .car .cmin{position:absolute;top:16px;right:16px;text-align:right}
+  .car .cmin span{display:block;font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.06em}
+  .car .cmin b{font-size:16px;color:var(--brand);font-weight:800}
+
+  /* SECTION */
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:36px 0 4px;flex-wrap:wrap}
+  .section-head h2{font-size:22px;font-weight:800;letter-spacing:-.01em}
+  .section-head .note{color:var(--muted);font-size:13px}
+  .hint{color:var(--muted2);font-size:13px;margin-bottom:20px}
+
+  /* WINNER BANNER */
+  .winner{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    background:linear-gradient(90deg,rgba(251,191,36,.12),rgba(251,191,36,.02));
+    border:1px solid rgba(251,191,36,.35);border-radius:14px;padding:14px 18px;margin:18px 0 26px
+  }
+  .winner .ico{font-size:22px}
+  .winner .t{font-size:14px;color:var(--muted)}
+  .winner .t b{color:var(--gold);font-weight:800;font-size:16px}
+  .winner .t .p{color:var(--txt);font-weight:800}
+
+  /* OFFER GRID */
+  .offers{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  @media(max-width:820px){.offers{grid-template-columns:1fr}}
+  .offer{
+    position:relative;background:var(--card);border:1.5px solid var(--line);
+    border-radius:var(--r);padding:20px;display:flex;flex-direction:column;transition:.18s;box-shadow:var(--sh)
+  }
+  .offer:hover{border-color:var(--line2)}
+  .offer.best{border-color:var(--gold)}
+  .offer.best:before{
+    content:"MELHOR PREÇO";position:absolute;top:-11px;left:20px;
+    background:var(--gold);color:#3a2c00;font-size:11px;font-weight:800;letter-spacing:.06em;
+    padding:3px 10px;border-radius:20px
+  }
+  .offer.refused{opacity:.85;border-style:dashed;border-color:var(--line2)}
+  .o-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .o-ins{font-size:19px;font-weight:800}
+  .o-tag{font-size:11.5px;color:var(--muted2);margin-top:1px}
+  .o-price{text-align:right;white-space:nowrap}
+  .o-price .lbl{font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.06em}
+  .o-price .val{font-size:24px;font-weight:800;letter-spacing:-.01em;color:var(--txt)}
+  .o-price.best .val{color:var(--gold)}
+  .o-price .install{font-size:12px;color:var(--brand);font-weight:600;margin-top:2px}
+  .o-vista{font-size:11.5px;color:var(--muted);margin-top:2px}
+
+  .badges{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 4px}
+  .bd{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:5px 10px;border-radius:8px;border:1px solid transparent}
+  .bd.yes{background:rgba(52,211,153,.10);color:var(--green);border-color:rgba(52,211,153,.22)}
+  .bd.no{background:rgba(248,113,113,.08);color:var(--red);border-color:rgba(248,113,113,.20)}
+
+  .rows{margin-top:14px;border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:0}
+  .row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid rgba(38,48,63,.55);font-size:13.5px}
+  .row:last-child{border-bottom:0}
+  .row .k{color:var(--muted)}
+  .row .v{color:var(--txt);font-weight:600;text-align:right}
+  .row .v.muted{color:var(--muted2);font-weight:500}
+
+  .franq{margin-top:14px;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:12.5px;color:var(--muted)}
+  .franq b{color:var(--txt)}
+
+  .refused-body{margin-top:14px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.22);border-radius:10px;padding:14px;font-size:13.5px;color:var(--txt)}
+  .refused-body .code{font-family:ui-monospace,monospace;color:var(--red);font-weight:700}
+
+  /* COMPARISON TABLE */
+  .tablewrap{margin-top:16px;overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  thead th{background:var(--bg2);color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;position:sticky;top:0}
+  tbody tr:last-child td{border-bottom:0}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .cell-best{color:var(--gold);font-weight:800}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+  .pill.y{background:rgba(52,211,153,.14);color:var(--green)}
+  .pill.n{background:rgba(248,113,113,.12);color:var(--red)}
+  .ins-cell{font-weight:800}
+
+  footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted2);font-size:12.5px}
+  footer p{margin-bottom:6px}
+  .tools{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .btn{cursor:pointer;border:1px solid var(--line2);background:var(--card2);color:var(--txt);font-weight:600;font-size:13px;padding:9px 16px;border-radius:10px;transition:.15s}
+  .btn:hover{border-color:var(--brand);color:var(--brand)}
+  .fade{animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  @media print{
+    body{background:#fff;color:#111}
+    .car,.offer,.tablewrap,.winner{break-inside:avoid}
+    .tools{display:none}
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Comparativo de Seguro Auto · Frota</div>
+    <h1>Cotações de Seguro — Saveiro &amp; Mobi</h1>
+    <p class="sub">Comparação lado a lado das seguradoras para os dois veículos da frota. Selecione um carro abaixo para ver as ofertas específicas dele.</p>
+    <div class="meta">
+      <div>Cliente: <b>ALUMINC Esquadrias Metálicas</b></div>
+      <div>CNPJ: <b>52.997.764/0001-05</b></div>
+      <div>Vigência: <b>28/07/2026 a 28/07/2027</b></div>
+      <div>Corretora: <b>SRO Brokers</b></div>
+      <div>Data: <b>16/07/2026</b></div>
+    </div>
+  </header>
+
+  <div class="switch-label">Escolha o veículo</div>
+  <div class="cars" id="cars"></div>
+
+  <div id="view"></div>
+
+  <footer>
+    <p><b>Observações importantes:</b></p>
+    <p>• Todos os valores <b>à vista</b> já incluem o IOF. As parcelas indicadas são a melhor opção sem juros de cada seguradora (cartão de crédito, salvo indicado).</p>
+    <p>• A <b>Porto Seguro</b> cotou os dois veículos como <b>frota (pacote único)</b> — o valor de R$ 13.300,74 cobre os dois carros juntos e não é separável por veículo.</p>
+    <p>• A <b>HDI Seguros recusou</b> o risco (mensagem do sistema: “VN00 – Risco fora das políticas de aceitação”), portanto não há oferta disponível.</p>
+    <p>• Cotação não garante aceitação — todas as seguradoras condicionam a emissão à análise de risco e, em alguns casos, vistoria prévia. Valores válidos conforme prazos de cada proposta.</p>
+    <div class="tools">
+      <button class="btn" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+const money = n => n==null ? "—" : "R$ " + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+const DADOS = {
+  saveiro: {
+    nome:"VW Saveiro Robust",
+    desc:"Nova Saveiro CS Robust 1.6 16V Flex · 2025/2026 · Placa TKL8B04",
+    emoji:"🛻",
+    ofertas:[
+      {
+        ins:"Mapfre", tag:"Auto 231 · Renovação",
+        total:4047.57, parcela:{n:12,v:337.30,tipo:"cartão sem juros"},
+        vidros:true, vidrosDet:"Vidros – Top", reserva:true, reservaDet:"7 dias · econômico c/ ar",
+        casco:"100% FIPE", franquia:6008.02, franquiaTipo:"Casco reduzida 50%",
+        rcfMat:200000, rcfCorp:200000, rcfMorais:10000,
+        appMorte:10000, appInval:10000, assist:"250 km (grátis)", reboque:"600 km", defesa:null
+      },
+      {
+        ins:"Tokio Marine", tag:"VMR · Renovação congênere",
+        total:6325.31, vista:6009.12, parcela:{n:12,v:526.97,tipo:"cartão sem juros"},
+        vidros:true, vidrosDet:"Cobertura completa", reserva:true, reservaDet:"15 diárias · básico",
+        casco:"100% VMR", franquia:5438.00, franquiaTipo:"50% da básica",
+        rcfMat:200000, rcfCorp:200000, rcfMorais:10000,
+        appMorte:10000, appInval:10000, assist:"Completa · 500 km", reboque:"500 km", defesa:null
+      },
+      {
+        ins:"Allianz", tag:"Completo · Renovação",
+        total:6398.80, parcela:{n:10,v:639.87,tipo:"cartão sem juros"},
+        vidros:true, vidrosDet:"Plano 2", reserva:true, reservaDet:"15 dias · básico",
+        casco:"100% FIPE", franquia:4536.80, franquiaTipo:"50% da normal",
+        rcfMat:200000, rcfCorp:200000, rcfMorais:30000,
+        appMorte:20000, appInval:20000, assist:"Plano 2 · 500 km", reboque:"500 km", defesa:20000
+      },
+      {
+        ins:"Porto Seguro", tag:"Frota (2 veículos)", fleet:true,
+        total:13300.74, fleetNote:"Valor do pacote com os 2 carros",
+        parcela:{n:10,v:1330.07,tipo:"sem juros"},
+        vidros:true, vidrosDet:"Cláusula 076 · IS R$ 15.000", reserva:true, reservaDet:"Extra básico · 7 dias",
+        casco:"100% FIPE", franquia:3357.60, franquiaTipo:"50% da obrigatória",
+        rcfMat:200000, rcfCorp:200000, rcfMorais:null,
+        appMorte:10000, appInval:10000, assist:"Básica · pane 200km", reboque:"—", defesa:20000
+      },
+      {
+        ins:"HDI Seguros", refused:true,
+        motivo:"VN00 – Risco fora das políticas de aceitação"
+      }
+    ]
+  },
+  mobi: {
+    nome:"Fiat Mobi Like",
+    desc:"Mobi Like 1.0 Flex 4p · 2022/2023 · Placa FMK4D85",
+    emoji:"🚗",
+    ofertas:[
+      {
+        ins:"Mapfre", tag:"Auto 231 · Renovação",
+        total:3485.56, parcela:{n:12,v:290.46,tipo:"cartão sem juros"},
+        vidros:true, vidrosDet:"Vidros – Top", reserva:true, reservaDet:"7 dias · econômico c/ ar",
+        casco:"100% FIPE", franquia:3233.57, franquiaTipo:"Casco reduzida 50%",
+        rcfMat:200000, rcfCorp:200000, rcfMorais:10000,
+        appMorte:10000, appInval:10000, assist:"250 km (grátis)", reboque:"600 km", defesa:null
+      },
+      {
+        ins:"Tokio Marine", tag:"VMR · Renovação congênere",
+        total:4349.49, vista:4132.08, parcela:{n:12,v:362.35,tipo:"cartão sem juros"},
+        vidros:true, vidrosDet:"Cobertura completa", reserva:true, reservaDet:"15 diárias · básico",
+        casco:"100% VMR", franquia:2907.00, franquiaTipo:"50% da básica",
+        rcfMat:200000, rcfCorp:200000, rcfMorais:10000,
+        appMorte:10000, appInval:10000, assist:"Completa · 500 km", reboque:"500 km", defesa:null
+      },
+      {
+        ins:"Allianz", tag:"Completo · Renovação",
+        total:5083.13, parcela:{n:10,v:508.31,tipo:"cartão sem juros"},
+        vidros:true, vidrosDet:"Plano 2", reserva:true, reservaDet:"15 dias · básico",
+        casco:"100% FIPE", franquia:3374.44, franquiaTipo:"50% da normal",
+        rcfMat:200000, rcfCorp:200000, rcfMorais:30000,
+        appMorte:20000, appInval:20000, assist:"Plano 2 · 500 km", reboque:"500 km", defesa:20000
+      },
+      {
+        ins:"Porto Seguro", tag:"Frota (2 veículos)", fleet:true,
+        total:13300.74, fleetNote:"Valor do pacote com os 2 carros",
+        parcela:{n:10,v:1330.07,tipo:"sem juros"},
+        vidros:true, vidrosDet:"Cláusula 076 · IS R$ 15.000", reserva:true, reservaDet:"Extra básico · 7 dias",
+        casco:"100% FIPE", franquia:2398.80, franquiaTipo:"50% da obrigatória",
+        rcfMat:200000, rcfCorp:200000, rcfMorais:null,
+        appMorte:10000, appInval:10000, assist:"Básica · pane 200km", reboque:"—", defesa:20000
+      },
+      {
+        ins:"HDI Seguros", refused:true,
+        motivo:"VN00 – Risco fora das políticas de aceitação"
+      }
+    ]
+  },
+  frota:{
+    nome:"Frota completa",
+    desc:"Soma dos dois veículos · Saveiro + Mobi",
+    emoji:"🚙",
+    fleet:true
+  }
+};
+
+// menor preço individual (ignora frota/recusa) por carro
+function menorPreco(carro){
+  return Math.min(...DADOS[carro].ofertas.filter(o=>!o.refused && !o.fleet).map(o=>o.total));
+}
+
+function badge(ok, txtYes, txtNo){
+  return `<span class="bd ${ok?'yes':'no'}">${ok?'✓':'✕'} ${ok?txtYes:txtNo}</span>`;
+}
+
+function offerCard(o, best){
+  if(o.refused){
+    return `<div class="offer refused">
+      <div class="o-top">
+        <div><div class="o-ins">${o.ins}</div><div class="o-tag">Sem oferta</div></div>
+        <div class="o-price"><div class="lbl">Situação</div><div class="val" style="color:var(--red);font-size:20px">Recusado</div></div>
+      </div>
+      <div class="refused-body">
+        A seguradora <b>não aceitou</b> cotar este risco.<br>
+        Retorno do sistema: <span class="code">${o.motivo}</span>
+      </div>
+    </div>`;
+  }
+  const isBest = o.total===best && !o.fleet;
+  const priceCls = isBest ? 'o-price best' : 'o-price';
+  const install = o.parcela ? `<div class="install">${o.parcela.n}x de ${money(o.parcela.v)}</div><div class="o-vista">${o.parcela.tipo}</div>` : '';
+  const vista = o.vista ? `<div class="o-vista">à vista c/ desconto: <b style="color:var(--green)">${money(o.vista)}</b></div>` : '';
+  return `<div class="offer ${isBest?'best':''}">
+    <div class="o-top">
+      <div><div class="o-ins">${o.ins}</div><div class="o-tag">${o.tag||''}</div></div>
+      <div class="${priceCls}">
+        <div class="lbl">${o.fleet?'Frota (à vista)':'Prêmio à vista'}</div>
+        <div class="val">${money(o.total)}</div>
+        ${install}${vista}
+      </div>
+    </div>
+    ${o.fleet?`<div class="franq" style="margin-top:14px;border-color:rgba(96,165,250,.3);background:rgba(96,165,250,.06)">ℹ️ <b>${o.fleetNote}.</b> Franquia/coberturas abaixo são deste veículo.</div>`:''}
+    <div class="badges">
+      ${badge(o.vidros,'Vidros: '+o.vidrosDet,'Sem vidros')}
+      ${badge(o.reserva,'Carro reserva: '+o.reservaDet,'Sem carro reserva')}
+    </div>
+    <div class="rows">
+      <div class="row"><span class="k">Casco (cobertura)</span><span class="v">${o.casco}</span></div>
+      <div class="row"><span class="k">Franquia casco</span><span class="v">${money(o.franquia)} <span class="v muted">(${o.franquiaTipo})</span></span></div>
+      <div class="row"><span class="k">RCF – Danos materiais</span><span class="v">${money(o.rcfMat)}</span></div>
+      <div class="row"><span class="k">RCF – Danos corporais</span><span class="v">${money(o.rcfCorp)}</span></div>
+      <div class="row"><span class="k">RCF – Danos morais</span><span class="v ${o.rcfMorais?'':'muted'}">${o.rcfMorais?money(o.rcfMorais):'não incluso'}</span></div>
+      <div class="row"><span class="k">APP morte / invalidez</span><span class="v">${money(o.appMorte)} / ${money(o.appInval)}</span></div>
+      <div class="row"><span class="k">Assistência 24h</span><span class="v">${o.assist}</span></div>
+      ${o.defesa?`<div class="row"><span class="k">Custos de defesa (RCF)</span><span class="v">${money(o.defesa)}</span></div>`:''}
+    </div>
+  </div>`;
+}
+
+function tabelaComparativa(carro){
+  const best = menorPreco(carro);
+  const rows = DADOS[carro].ofertas.map(o=>{
+    if(o.refused) return `<tr>
+      <td class="ins-cell">${o.ins}</td>
+      <td colspan="6" style="color:var(--red)">Recusado — ${o.motivo}</td></tr>`;
+    const cls = (o.total===best && !o.fleet) ? 'num cell-best' : 'num';
+    return `<tr>
+      <td class="ins-cell">${o.ins}${o.fleet?' <span class="pill" style="background:rgba(96,165,250,.14);color:var(--blue)">frota</span>':''}</td>
+      <td class="${cls}">${money(o.total)}</td>
+      <td class="num">${money(o.franquia)}</td>
+      <td>${o.vidros?'<span class="pill y">sim</span>':'<span class="pill n">não</span>'}</td>
+      <td>${o.reserva?'<span class="pill y">sim</span>':'<span class="pill n">não</span>'}</td>
+      <td class="num">${money(o.rcfMat)}</td>
+      <td class="num">${o.rcfMorais?money(o.rcfMorais):'—'}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="tablewrap"><table>
+    <thead><tr>
+      <th>Seguradora</th><th style="text-align:right">Prêmio à vista</th><th style="text-align:right">Franquia casco</th>
+      <th>Vidros</th><th>Carro reserva</th><th style="text-align:right">RCF materiais</th><th style="text-align:right">Danos morais</th>
+    </tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function renderCarro(carro){
+  const d = DADOS[carro];
+  const best = menorPreco(carro);
+  const bestIns = d.ofertas.find(o=>o.total===best && !o.fleet).ins;
+  const cards = d.ofertas.map(o=>offerCard(o,best)).join('');
+  return `<div class="fade">
+    <div class="section-head">
+      <h2>${d.emoji} ${d.nome}</h2>
+      <div class="note">${d.desc}</div>
+    </div>
+    <div class="winner">
+      <span class="ico">🏆</span>
+      <div class="t">Melhor preço individual: <b>${bestIns}</b> — <span class="p">${money(best)}</span> à vista, já com vidros e carro reserva inclusos.</div>
+    </div>
+    <div class="offers">${cards}</div>
+    <div class="section-head" style="margin-top:34px"><h2>📊 Tabela comparativa</h2><div class="note">${d.nome}</div></div>
+    ${tabelaComparativa(carro)}
+  </div>`;
+}
+
+function renderFrota(){
+  // soma dos individuais por seguradora (só as que têm preço nos dois carros)
+  const seg = {};
+  ['saveiro','mobi'].forEach(c=>{
+    DADOS[c].ofertas.forEach(o=>{
+      if(o.refused||o.fleet) return;
+      seg[o.ins] = seg[o.ins]||{ins:o.ins,total:0,carros:0};
+      seg[o.ins].total += o.total; seg[o.ins].carros++;
+    });
+  });
+  let linhas = Object.values(seg).filter(s=>s.carros===2).map(s=>({ins:s.ins,total:s.total,tipo:'Soma individual (2 carros)'}));
+  linhas.push({ins:'Porto Seguro',total:13300.74,tipo:'Pacote frota único',fleet:true});
+  linhas.sort((a,b)=>a.total-b.total);
+  const best = Math.min(...linhas.map(l=>l.total));
+  const cards = linhas.map(l=>{
+    const isBest = l.total===best;
+    return `<div class="offer ${isBest?'best':''}">
+      <div class="o-top">
+        <div><div class="o-ins">${l.ins}</div><div class="o-tag">${l.tipo}</div></div>
+        <div class="${isBest?'o-price best':'o-price'}"><div class="lbl">Total frota à vista</div><div class="val">${money(l.total)}</div></div>
+      </div>
+      ${l.fleet?'<div class="franq" style="margin-top:14px;border-color:rgba(96,165,250,.3);background:rgba(96,165,250,.06)">ℹ️ Pacote fechado dos 2 veículos, cotado em conjunto pela Porto.</div>'
+      :`<div class="franq" style="margin-top:14px">Saveiro + Mobi somados. Veja o detalhe de cada carro nas abas acima.</div>`}
+    </div>`;
+  }).join('');
+  const rows = linhas.map(l=>{
+    const cls = l.total===best?'num cell-best':'num';
+    return `<tr><td class="ins-cell">${l.ins}${l.fleet?' <span class="pill" style="background:rgba(96,165,250,.14);color:var(--blue)">frota</span>':''}</td><td class="${cls}">${money(l.total)}</td><td>${l.tipo}</td></tr>`;
+  }).join('');
+  return `<div class="fade">
+    <div class="section-head"><h2>🚙 Frota completa — visão geral</h2><div class="note">Custo total dos dois veículos juntos</div></div>
+    <div class="winner"><span class="ico">🏆</span><div class="t">Menor custo total da frota: <b>${linhas[0].ins}</b> — <span class="p">${money(best)}</span> pelos dois carros.</div></div>
+    <div class="hint">A HDI recusou o risco e por isso não entra nesta soma. A Porto só cotou no formato de pacote fechado.</div>
+    <div class="offers">${cards}</div>
+    <div class="section-head" style="margin-top:34px"><h2>📊 Ranking da frota</h2></div>
+    <div class="tablewrap"><table><thead><tr><th>Seguradora</th><th style="text-align:right">Total (2 carros)</th><th>Formato</th></tr></thead><tbody>${rows}</tbody></table></div>
+  </div>`;
+}
+
+let atual = 'saveiro';
+function render(){
+  const carsEl = document.getElementById('cars');
+  const order = ['saveiro','mobi','frota'];
+  carsEl.innerHTML = order.map(c=>{
+    const d = DADOS[c];
+    let min='';
+    if(!d.fleet){ min = `<div class="cmin"><span>a partir de</span><b>${money(menorPreco(c))}</b></div>`; }
+    const badge = d.fleet ? '<span class="cbadge b-fleet">Visão geral</span>' : '<span class="cbadge b-ok">4 seguradoras · 1 recusa</span>';
+    return `<button class="car ${c===atual?'active':''}" onclick="sel('${c}')">
+      <div class="emoji">${d.emoji}</div>
+      <div class="cname">${d.nome}</div>
+      <div class="cdesc">${d.desc}</div>
+      ${badge}${min}
+    </button>`;
+  }).join('');
+  document.getElementById('view').innerHTML = atual==='frota' ? renderFrota() : renderCarro(atual);
+}
+function sel(c){ atual=c; render(); window.scrollTo({top:document.querySelector('.switch-label').offsetTop-20,behavior:'smooth'}); }
+render();
+</script>
